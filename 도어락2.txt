@@ -1,0 +1,36 @@
+#include <SoftwareSerial.h> 
+  
+  SoftwareSerial BTSerial(2, 3); 
+  byte buffer[1024]; 
+  int bufferPosition; 
+  boolean temp = 0;
+  
+void setup(){
+  BTSerial.begin(9600); 
+  Serial.begin(9600); 
+  pinMode(13, OUTPUT);
+  bufferPosition = 0; 
+}
+
+void loop(){
+  if (BTSerial.available()){ 
+    byte data = BTSerial.read(); 
+    Serial.write(data); 
+    buffer[bufferPosition++] = data; 
+  
+    if(data == '1'){  
+      if(temp == 0){  
+        digitalWrite(13, HIGH);
+        temp = 1;
+      }else{          
+        digitalWrite(13, LOW);
+        temp = 0;
+      }
+    }
+      
+    if(data == '\n'){ 
+      buffer[bufferPosition] = '\0';
+      bufferPosition = 0;
+    }  
+  }
+}
